@@ -12,22 +12,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { use, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  });
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
+  const { data: session, status } = useSession();
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
+
+  console.log("User session data:", session, status);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -63,13 +57,15 @@ const Navbar = () => {
               <span className="sr-only">Search</span>
             </Button>
 
-            {!isLoggedIn ? (
+            {status === "unauthenticated" ? (
               /* Not Logged In - Show Login and Create Account */
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" onClick={handleLogin}>
-                  Log In
+                <Button variant="ghost">
+                  <Link href={"/auth/signin"}>Log In</Link>
                 </Button>
-                <Button onClick={handleLogin}>Create Account</Button>
+                <Button>
+                  <Link href={"/auth/signup"}>Create Account</Link>
+                </Button>
               </div>
             ) : (
               /* Logged In - Show Create Post, Notifications, and User Menu */
@@ -95,8 +91,8 @@ const Navbar = () => {
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarImage
-                          src={user.avatar || "/placeholder.svg"}
-                          alt={user.name}
+                          src={session?.user?.image || "/placeholder.svg"}
+                          alt={session?.user?.name}
                         />
                         <AvatarFallback>
                           <User className="h-4 w-4" />
@@ -107,9 +103,9 @@ const Navbar = () => {
                   <DropdownMenuContent className="w-56" align="end" forceMount>
                     <div className="flex items-center justify-start gap-2 p-2">
                       <div className="flex flex-col space-y-1 leading-none">
-                        <p className="font-medium">{user.name}</p>
+                        <p className="font-medium">{session?.user?.name}</p>
                         <p className="w-[200px] truncate text-sm text-muted-foreground">
-                          {user.email}
+                          {session?.user?.email}
                         </p>
                       </div>
                     </div>
@@ -126,7 +122,11 @@ const Navbar = () => {
                       <Link href="/dashboard">Dashboard</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        signOut({ callbackUrl: "/" });
+                      }}
+                    >
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
