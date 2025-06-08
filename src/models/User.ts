@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model, models } from "mongoose";
-export interface IUser extends mongoose.Document {
+export interface IUser extends Document {
   _id: mongoose.Types.ObjectId; // MongoDB ObjectId
   name: string;
   image?: string; // Optional field for user image

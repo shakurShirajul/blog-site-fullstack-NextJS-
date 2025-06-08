@@ -36,7 +36,7 @@ const Signin = () => {
       redirect: false,
     });
     console.log(res);
-    // redirect("/"); // Redirect to home page after successful login
+    redirect("/"); // Redirect to home page after successful login
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
