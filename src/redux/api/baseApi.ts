@@ -21,6 +21,17 @@ export const baseApi = createApi({
         // console.log("Post data:", postData),
       }),
     }),
+    getPost: builder.query({
+      query: () => `/posts`,
+    }),
+    getPosts: builder.query({
+      query: (id: string) => `/postst/${id}`,
+    }),
   }),
 });
-export const { useSignupMutation, useCreatePostMutation } = baseApi;
+export const {
+  useSignupMutation,
+  useCreatePostMutation,
+  useGetPostQuery,
+  useGetPostsQuery,
+} = baseApi;
