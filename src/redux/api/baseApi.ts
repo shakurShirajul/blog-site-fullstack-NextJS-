@@ -1,3 +1,4 @@
+import { IBlog } from "@/models/Blog";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const baseApi = createApi({
   reducerPath: "api",
@@ -21,17 +22,17 @@ export const baseApi = createApi({
         // console.log("Post data:", postData),
       }),
     }),
-    getPost: builder.query({
+    getPosts: builder.query<IBlog[], void>({
       query: () => `/posts`,
     }),
-    getPosts: builder.query({
-      query: (id: string) => `/postst/${id}`,
+    getPost: builder.query<IBlog, string>({
+      query: (id: string) => `/posts/${id}`,
     }),
   }),
 });
 export const {
   useSignupMutation,
   useCreatePostMutation,
-  useGetPostQuery,
   useGetPostsQuery,
+  useGetPostQuery,
 } = baseApi;

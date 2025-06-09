@@ -1,0 +1,114 @@
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { Card, CardContent, CardHeader } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Bookmark, Heart, MessageCircle, ThumbsDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+interface Post {}
+const PostCard = ({ blog }) => {
+  const router = useRouter();
+  const handleCardClick = (event: React.MouseEvent) => {
+    const target = event.target as HTMLElement;
+
+    if (
+      target.closest("button") ||
+      target.closest("a") ||
+      target.closest('[role="button"]')
+    ) {
+      return;
+    }
+
+    if (blog?._id) {
+      router.push(`/post/${blog._id}`);
+    } else {
+      console.warn("blog._id is undefined");
+    }
+  };
+
+  return (
+    <Card
+      className="w-full cursor-pointer hover:shadow-md transition-shadow"
+      onClick={handleCardClick}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start space-x-3">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={blog.authorID.image || "placeholder.svg"} />
+          </Avatar>
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center space-x-2">
+              <h4 className="font-semibold">{blog.authorID.name}</h4>
+              <span className="text-sm text-muted-foreground">•</span>
+              <span className="text-sm text-muted-foreground">
+                {blog.updatedAt}
+              </span>
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <h3 className="text-lg font-semibold leading-tight hover:text-primary transition-colors">
+          {blog.title}
+        </h3>
+        <p className="text-muted-foreground leading-relaxed line-clamp-3 prose">
+          {blog.content}
+        </p>
+        {/* Tags */}
+        {blog.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {blog.tags.map((tag: String[]) => (
+              <Badge key={tag} variant="secondary" className="text-xs">
+                #{tag}
+              </Badge>
+            ))}
+          </div>
+        )}
+        {/* Engagement Stats and Actions */}
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center space-x-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`flex items-center space-x-2`}
+            >
+              <Heart />
+              <span>{blog.likes}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`flex items-center space-x-2 `}
+            >
+              <ThumbsDown className={`h-4 w-4 `} />
+              <span>{blog.dislikes}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center space-x-2"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>{blog.comments.length}</span>
+            </Button>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            // onClick={(e) => handleActionClick(e, () => onBookmark(post.id))}
+            // className={post.isBookmarked ? "text-yellow-500" : ""}
+          >
+            <Bookmark
+            //   className={`h-4 w-4 ${post.isBookmarked ? "fill-current" : ""}`}
+            />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+export default PostCard;
