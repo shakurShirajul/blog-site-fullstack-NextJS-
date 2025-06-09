@@ -11,6 +11,7 @@ import {
   Heart,
   MessageCircle,
   ThumbsDown,
+  ThumbsUp,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -79,7 +80,7 @@ const PostDetails = () => {
                       //     post.isLiked ? "text-red-500" : ""
                       //   }`}
                     >
-                      <Heart
+                      <ThumbsUp
                       // className={`h-5 w-5 ${post.isLiked ? "fill-current" : ""}`}
                       />
                       <span>{blog?.upvotes?.length}</span>

@@ -2,7 +2,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Bookmark, Heart, MessageCircle, ThumbsDown } from "lucide-react";
+import {
+  Bookmark,
+  Heart,
+  MessageCircle,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface Post {}
@@ -91,7 +97,7 @@ const PostCard = ({ blog }: { blog: Blog }) => {
               size="sm"
               className={`flex items-center space-x-2`}
             >
-              <Heart />
+              <ThumbsUp />
               <span>{blog?.upvotes?.length}</span>
             </Button>
 
