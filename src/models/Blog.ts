@@ -4,10 +4,10 @@ export interface IBlog extends Document {
   title: string;
   tags: string[];
   content: string;
-  upvotes: number;
-  downvotes: number;
-  authorID: mongoose.Types.ObjectId; // Reference to User
-  comments?: mongoose.Types.ObjectId[]; // Array of Comment IDs
+  upvotes: mongoose.Types.ObjectId[];
+  downvotes: mongoose.Types.ObjectId[];
+  authorID: mongoose.Types.ObjectId;
+  comments: mongoose.Types.ObjectId[];
 }
 
 const BlogSchema: Schema<IBlog> = new Schema(
@@ -15,42 +15,48 @@ const BlogSchema: Schema<IBlog> = new Schema(
     title: {
       type: String,
       required: true,
-      maxlength: 100, // Limit title length
+      maxlength: 100,
     },
     tags: {
       type: [String],
       default: [],
-      maxlength: 5, // Limit number of tags
+      validate: {
+        validator: (value: string[]) => value.length <= 5,
+        message: "You can only provide up to 5 tags.",
+      },
     },
     content: {
       type: String,
       required: true,
     },
     upvotes: {
-      type: Number,
-      default: 0,
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
     },
     downvotes: {
-      type: Number,
-      default: 0,
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
     },
     authorID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
+    comments: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Comment",
+      default: [],
+    },
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+
 const Blog: mongoose.Model<IBlog> =
   mongoose.models.Blog || mongoose.model<IBlog>("Blog", BlogSchema);
+
 export default Blog;

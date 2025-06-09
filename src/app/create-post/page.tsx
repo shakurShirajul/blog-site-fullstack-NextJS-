@@ -58,8 +58,8 @@ export default function CreatePost() {
   };
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+      <main className="py-8">
+        <div className="">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
@@ -77,8 +77,11 @@ export default function CreatePost() {
             </div>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-4">
-            <form onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="grid gap-8 lg:grid-cols-4"
+            >
               {/* Main Content */}
               <div className="lg:col-span-3 space-y-6">
                 {/* Title */}

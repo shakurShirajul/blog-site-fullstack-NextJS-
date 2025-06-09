@@ -18,7 +18,6 @@ const PostDetails = () => {
   const params = useParams();
   const router = useRouter();
   const { data: blog, isLoading } = useGetPostQuery(params.id as string);
-  console.log("shakur is good boy", blog);
   return (
     <div>
       {isLoading ? (
@@ -37,7 +36,7 @@ const PostDetails = () => {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-12 w-12">
                     <AvatarImage
-                      src={blog?.authorID?.image || "placeholder.svg"}
+                      src={blog.authorID.image || "placeholder.svg"}
                     />
                   </Avatar>
                   <div>
@@ -54,7 +53,7 @@ const PostDetails = () => {
                 <h1 className="text-3xl font-bold leading-tight">
                   {blog.title}
                 </h1>
-                <div className="max-w-">{blog.content}</div>
+                <div className="">{blog.content}</div>
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2">
                   {blog?.tags?.map((tag) => (
@@ -83,7 +82,7 @@ const PostDetails = () => {
                       <Heart
                       // className={`h-5 w-5 ${post.isLiked ? "fill-current" : ""}`}
                       />
-                      <span>{blog?.upvotes}</span>
+                      <span>{blog?.upvotes?.length}</span>
                     </Button>
 
                     <Button
@@ -99,7 +98,7 @@ const PostDetails = () => {
                       //   post.isDisliked ? "fill-current" : ""
                       // }`}
                       />
-                      <span>{blog?.downvotes}</span>
+                      <span>{blog?.downvotes?.length}</span>
                     </Button>
 
                     <Button
