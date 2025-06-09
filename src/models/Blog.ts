@@ -6,7 +6,7 @@ export interface IBlog extends Document {
   content: string;
   upvotes: number;
   downvotes: number;
-  author: mongoose.Types.ObjectId; // Reference to User
+  authorID: mongoose.Types.ObjectId; // Reference to User
   comments: mongoose.Types.ObjectId[]; // Array of Comment IDs
 }
 
@@ -34,7 +34,7 @@ const BlogSchema: Schema<IBlog> = new Schema(
       type: Number,
       default: 0,
     },
-    author: {
+    authorID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,

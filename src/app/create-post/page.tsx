@@ -10,114 +10,52 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Save, Eye, Send, ArrowLeft } from "lucide-react";
+import { useCreatePostMutation } from "@/redux/api/baseApi";
+import { useSession } from "next-auth/react";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
-interface PostData {
+interface Inputs {
   title: string;
-  tags: string[] | string;
-  body: string;
+  tags: string[];
+  content: string;
+}
+interface IPostData extends Inputs {
+  authorID: string | undefined;
 }
 
 export default function CreatePost() {
   const router = useRouter();
-  const [postData, setPostData] = useState<PostData>({
-    title: "",
-    tags: [],
-    body: "",
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      tags: [],
+    },
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Partial<PostData>>({});
+  const { data: session, status } = useSession();
+  const [createPost, { isLoading, error }] = useCreatePostMutation();
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<PostData> = {};
-
-    if (!postData.title.trim()) {
-      newErrors.title = "Title is required";
-    } else if (postData.title.length < 5) {
-      newErrors.title = "Title must be at least 5 characters long";
-    } else if (postData.title.length > 100) {
-      newErrors.title = "Title must be less than 100 characters";
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const postData: IPostData = {
+        title: data.title,
+        tags: data.tags,
+        content: data.content,
+        authorID: (session?.user as { id?: string })?.id,
+      };
+      const response = await createPost(postData).unwrap();
+      if (response) {
+        reset();
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-    if (postData.tags.length === 0) {
-      newErrors.tags = "At least one tag is required";
-    }
-
-    if (!postData.body.trim()) {
-      newErrors.body = "Post content is required";
-    } else if (postData.body.length < 50) {
-      newErrors.body = "Post content must be at least 50 characters long";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
-
-  // const handleSaveDraft = async () => {
-  //   setIsSubmitting(true);
-  //   try {
-  //     // Simulate API call
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));
-  //     toast({
-  //       title: "Draft saved",
-  //       description: "Your post has been saved as a draft.",
-  //     });
-  //   } catch (error) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Failed to save draft. Please try again.",
-  //       variant: "destructive",
-  //     });
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
-  // const handlePreview = () => {
-  //   if (!validateForm()) {
-  //     toast({
-  //       title: "Validation Error",
-  //       description: "Please fix the errors before previewing.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-  //   // Here you could open a preview modal or navigate to a preview page
-  //   toast({
-  //     title: "Preview",
-  //     description: "Preview functionality would open here.",
-  //   });
-  // };
-
-  const handlePublish = async () => {
-    // if (!validateForm()) {
-    //   toast({
-    //     title: "Validation Error",
-    //     description: "Please fix all errors before publishing.",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
-    // setIsSubmitting(true);
-    // try {
-    // Simulate API call
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    //   toast({
-    //     title: "Post published!",
-    //     description: "Your post has been published successfully.",
-    //   });
-    //   router.push("/");
-    // } catch (error) {
-    //   toast({
-    //     title: "Error",
-    //     description: "Failed to publish post. Please try again.",
-    //     variant: "destructive",
-    //   });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
-    console.log("Post data submitted:", postData);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
@@ -140,140 +78,152 @@ export default function CreatePost() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-4">
-            {/* Main Content */}
-            <div className="lg:col-span-3 space-y-6">
-              {/* Title */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Post Title</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="title" className="sr-only">
-                      Title
-                    </Label>
-                    <Input
-                      id="title"
-                      placeholder="Enter your post title..."
-                      value={postData.title}
-                      onChange={(e) =>
-                        setPostData({ ...postData, title: e.target.value })
-                      }
-                      className={errors.title ? "border-red-500" : ""}
-                      maxLength={100}
-                    />
-                    {errors.title && (
-                      <p className="text-sm text-red-500">{errors.title}</p>
-                    )}
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>A compelling title helps attract readers</span>
-                      <span>{postData.title.length}/100</span>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Main Content */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Title */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Post Title</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <Label htmlFor="title" className="sr-only">
+                        Title
+                      </Label>
+                      <Input
+                        id="title"
+                        placeholder="Enter your post title..."
+                        type="text"
+                        {...register("title", {
+                          required: "Title is Required",
+                        })}
+                        className={errors.title ? "border-red-500" : ""}
+                        maxLength={100}
+                      />
+                      {errors.title && (
+                        <p className="text-sm text-red-500">
+                          {errors.title.message}
+                        </p>
+                      )}
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>A compelling title helps attract readers</span>
+                        {/* <span>{postData.title.length}/100</span> */}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              {/* Tags */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Tags</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="tags" className="sr-only">
-                      Tags
-                    </Label>
-                    <TagInput
-                      tags={postData.tags}
-                      onChange={(tags) => setPostData({ ...postData, tags })}
-                      placeholder="Add tags to help people discover your post..."
-                    />
-                    {errors.tags && (
-                      <p className="text-sm text-red-500">{errors.tags}</p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Body */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Post Content</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="body" className="sr-only">
-                      Post Content
-                    </Label>
-                    <MarkdownEditor
-                      value={postData.body}
-                      onChange={(body) => setPostData({ ...postData, body })}
-                      placeholder="Write your post content here... You can use Markdown syntax for formatting."
-                    />
-                    {errors.body && (
-                      <p className="text-sm text-red-500">{errors.body}</p>
-                    )}
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Supports Markdown syntax for rich formatting</span>
-                      <span>{postData.body.length} characters</span>
+                {/* Tags */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Tags</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <Label htmlFor="tags" className="sr-only">
+                        Tags
+                      </Label>
+                      <Controller
+                        name="tags"
+                        control={control}
+                        rules={{
+                          validate: (value) => {
+                            if (!value || value.length === 0) {
+                              return "At least one tag is required";
+                            } else if (value.length > 5) {
+                              return "You can use a maximum of 5 tags";
+                            }
+                            return true;
+                          },
+                        }}
+                        render={({ field }) => (
+                          <TagInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Add tags to help people discover your post..."
+                          />
+                        )}
+                      />
+                      {errors.tags && (
+                        <p className="text-sm text-red-500">
+                          {errors.tags.message}
+                        </p>
+                      )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </CardContent>
+                </Card>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-8">
-                <CardHeader>
-                  <CardTitle>Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleSaveDraft}
-                    disabled={isSubmitting}
-                  >
-                    <Save className="mr-2 h-4 w-4" />
-                    Save Draft
-                  </Button>
+                {/* Body */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Post Content</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <Label htmlFor="body" className="sr-only">
+                        Post Content
+                      </Label>
+                      <Controller
+                        name="content"
+                        control={control}
+                        rules={{
+                          required: "Post content is required",
+                          minLength: {
+                            value: 50,
+                            message:
+                              "Post content must be at least 50 characters long",
+                          },
+                        }}
+                        render={({ field }) => (
+                          <MarkdownEditor
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Write your post content here... You can use Markdown syntax for formatting."
+                          />
+                        )}
+                      />
+                      {errors.content && (
+                        <p className="text-sm text-red-500">
+                          {errors.content.message}
+                        </p>
+                      )}
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>
+                          Supports Markdown syntax for rich formatting
+                        </span>
+                        {/* <span>{postData.body.length} characters</span> */}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              {/* Sidebar */}
+              <div className="lg:col-span-1">
+                <Card className="sticky top-8">
+                  <CardHeader>
+                    <CardTitle>Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button className="w-full" type="submit">
+                      <Send className="mr-2 h-4 w-4" />
+                    </Button>
 
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={handlePreview}
-                    disabled={isSubmitting}
-                  >
-                    <Eye className="mr-2 h-4 w-4" />
-                    Preview
-                  </Button> */}
-
-                  <Separator />
-
-                  <Button
-                    className="w-full"
-                    onClick={handlePublish}
-                    disabled={isSubmitting}
-                  >
-                    <Send className="mr-2 h-4 w-4" />
-                    {isSubmitting ? "Publishing..." : "Publish Post"}
-                  </Button>
-
-                  <div className="text-sm text-muted-foreground space-y-2">
-                    <p>
-                      <strong>Tips:</strong>
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-xs">
-                      <li>Use descriptive titles</li>
-                      <li>Add relevant tags</li>
-                      <li>Format with Markdown</li>
-                      <li>Save drafts frequently</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                    <div className="text-sm text-muted-foreground space-y-2">
+                      <p>
+                        <strong>Tips:</strong>
+                      </p>
+                      <ul className="list-disc list-inside space-y-1 text-xs">
+                        <li>Use descriptive titles</li>
+                        <li>Add relevant tags</li>
+                        <li>Format with Markdown</li>
+                        <li>Save drafts frequently</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </form>
           </div>
         </div>
       </main>

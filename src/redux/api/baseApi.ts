@@ -13,6 +13,14 @@ export const baseApi = createApi({
         body: userData,
       }),
     }),
+    createPost: builder.mutation({
+      query: (postData) => ({
+        url: "/createpost",
+        method: "POST",
+        body: postData,
+        // console.log("Post data:", postData),
+      }),
+    }),
   }),
 });
-export const { useSignupMutation } = baseApi;
+export const { useSignupMutation, useCreatePostMutation } = baseApi;

@@ -21,7 +21,7 @@ const Navbar = () => {
     setIsLoggedIn(false);
   };
 
-  console.log("User session data:", session, status);
+  // console.log("User session data:", session, status);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -94,7 +94,7 @@ const Navbar = () => {
                       <Avatar className="h-8 w-8">
                         <AvatarImage
                           src={session?.user?.image || "/placeholder.svg"}
-                          alt={session?.user?.name}
+                          // alt={session?.user?.name}
                         />
                         <AvatarFallback>
                           <User className="h-4 w-4" />

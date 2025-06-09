@@ -35,7 +35,7 @@ const Signin = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      console.log("Form data submitted:", data);
+      // console.log("Form data submitted:", data);
       const response = await signupUser(data).unwrap();
       if (response) {
         reset();

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       image: image || "",
       password: hashedPassword,
     });
-    console.log("New user created:", newUser);
+    // console.log("New user created:", newUser);
     return NextResponse.json(
       { message: "User created successfully" },
       { status: 201 }

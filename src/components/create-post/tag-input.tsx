@@ -7,16 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { validateHeaderValue } from "http";
 
 interface TagInputProps {
-  tags: string[];
+  value: string[];
   onChange: (tags: string[]) => void;
   suggestions?: string[];
   placeholder?: string;
 }
 
 export default function TagInput({
-  tags,
+  value,
   onChange,
   suggestions = [],
   placeholder,
@@ -67,7 +68,7 @@ export default function TagInput({
       const filtered = allSuggestions.filter(
         (suggestion) =>
           suggestion.toLowerCase().includes(inputValue.toLowerCase()) &&
-          !tags.includes(suggestion.toLowerCase())
+          !value.includes(suggestion.toLowerCase())
       );
       setFilteredSuggestions(filtered.slice(0, 8)); // Limit to 8 suggestions
       setShowSuggestions(filtered.length > 0);
@@ -75,19 +76,19 @@ export default function TagInput({
       setShowSuggestions(false);
       setFilteredSuggestions([]);
     }
-  }, [inputValue, tags]); // Removed allSuggestions from the dependency array
+  }, [inputValue, value]); // Removed allSuggestions from the dependency array
 
   const addTag = (tag: string) => {
     const trimmedTag = tag.trim().toLowerCase();
-    if (trimmedTag && !tags.includes(trimmedTag) && tags.length < 10) {
-      onChange([...tags, trimmedTag]);
+    if (trimmedTag && !value.includes(trimmedTag) && value.length < 10) {
+      onChange([...value, trimmedTag]);
       setInputValue("");
       setShowSuggestions(false);
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    onChange(tags.filter((tag) => tag !== tagToRemove));
+    onChange(value.filter((tag) => tag !== tagToRemove));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -96,8 +97,8 @@ export default function TagInput({
       if (inputValue.trim()) {
         addTag(inputValue);
       }
-    } else if (e.key === "Backspace" && !inputValue && tags.length > 0) {
-      removeTag(tags[tags.length - 1]);
+    } else if (e.key === "Backspace" && !inputValue && value.length > 0) {
+      removeTag(value[value.length - 1]);
     }
   };
 
@@ -110,7 +111,7 @@ export default function TagInput({
     <div className="space-y-2">
       <div className="relative">
         <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[42px] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-          {tags.map((tag) => (
+          {value.map((tag) => (
             <Badge
               key={tag}
               variant="secondary"
@@ -137,9 +138,9 @@ export default function TagInput({
               inputValue && setShowSuggestions(filteredSuggestions.length > 0)
             }
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder={tags.length === 0 ? placeholder : ""}
+            placeholder={value.length === 0 ? placeholder : ""}
             className="border-none shadow-none focus-visible:ring-0 flex-1 min-w-[120px] p-0"
-            disabled={tags.length >= 10}
+            disabled={value.length >= 10}
           />
         </div>
 
@@ -161,7 +162,7 @@ export default function TagInput({
 
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>Press Enter or comma to add tags</span>
-        <span>{tags.length}/10 tags</span>
+        <span>{value.length}/10 tags</span>
       </div>
     </div>
   );
