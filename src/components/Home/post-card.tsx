@@ -55,6 +55,9 @@ const PostCard = ({ blog }: { blog: Blog }) => {
     manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
   };
 
+  const isUpvoted = blog.upvotes.includes(session?.user?.id || "");
+  const isDownvoted = blog.downvotes.includes(session?.user?.id || "");
+
   return (
     <Card
       className="w-full cursor-pointer hover:shadow-md transition-shadow"
@@ -104,7 +107,9 @@ const PostCard = ({ blog }: { blog: Blog }) => {
               className={`flex items-center space-x-2`}
               onClick={() => handleReaction("upvotes")}
             >
-              <ThumbsUp />
+              <ThumbsUp
+                className={`h-4 w-4 ${isUpvoted ? "stroke-green-600" : ""}`}
+              />
               <span>{blog?.upvotes?.length}</span>
             </Button>
 
@@ -114,7 +119,9 @@ const PostCard = ({ blog }: { blog: Blog }) => {
               className={`flex items-center space-x-2 `}
               onClick={() => handleReaction("downvotes")}
             >
-              <ThumbsDown className={`h-4 w-4 `} />
+              <ThumbsDown
+                className={`h-4 w-4 ${isDownvoted ? "stroke-red-600" : ""}`}
+              />
               <span>{blog?.downvotes?.length}</span>
             </Button>
 
