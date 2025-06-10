@@ -19,7 +19,6 @@ export const baseApi = createApi({
         url: "/createpost",
         method: "POST",
         body: postData,
-        // console.log("Post data:", postData),
       }),
     }),
     getPosts: builder.query<IBlog[], void>({
@@ -28,6 +27,13 @@ export const baseApi = createApi({
     getPost: builder.query<IBlog, string>({
       query: (id: string) => `/posts/${id}`,
     }),
+    votes: builder.mutation({
+      query: (reactionData) => ({
+        url: "/votes",
+        method: "POST",
+        body: reactionData,
+      }),
+    }),
   }),
 });
 export const {
@@ -35,4 +41,5 @@ export const {
   useCreatePostMutation,
   useGetPostsQuery,
   useGetPostQuery,
+  useVotesMutation,
 } = baseApi;

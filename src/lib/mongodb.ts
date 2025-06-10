@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = `mongodb://localhost:27017/`;
+const MONGODB_URI = `mongodb://localhost:27017/nextjs-blog`; // Preferred
 
 if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
@@ -16,13 +16,9 @@ async function connectDB() {
     return cached.conn;
   }
   if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(MONGODB_URI, {
-        dbName: "nextjs-blog",
-      })
-      .then((mongoose) => {
-        return mongoose;
-      });
+    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
+      return mongoose;
+    });
   }
 
   cached.conn = await cached.promise;

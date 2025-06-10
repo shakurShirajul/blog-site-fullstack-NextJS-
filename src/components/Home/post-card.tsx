@@ -10,6 +10,8 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useVotesMutation } from "@/redux/api/baseApi";
+import { useSession } from "next-auth/react";
 
 interface Post {}
 interface Blog {
@@ -29,9 +31,9 @@ interface Blog {
 
 const PostCard = ({ blog }: { blog: Blog }) => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const handleCardClick = (event: React.MouseEvent) => {
     const target = event.target as HTMLElement;
-
     if (
       target.closest("button") ||
       target.closest("a") ||
@@ -46,8 +48,12 @@ const PostCard = ({ blog }: { blog: Blog }) => {
       console.warn("blog._id is undefined");
     }
   };
+  const [manageReaction, { isLoading, error }] = useVotesMutation();
 
-  console.log(blog);
+  const handleReaction = (voteTypes: string) => {
+    console.log(voteTypes);
+    manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
+  };
 
   return (
     <Card
@@ -96,6 +102,7 @@ const PostCard = ({ blog }: { blog: Blog }) => {
               variant="ghost"
               size="sm"
               className={`flex items-center space-x-2`}
+              onClick={() => handleReaction("upvotes")}
             >
               <ThumbsUp />
               <span>{blog?.upvotes?.length}</span>
@@ -105,6 +112,7 @@ const PostCard = ({ blog }: { blog: Blog }) => {
               variant="ghost"
               size="sm"
               className={`flex items-center space-x-2 `}
+              onClick={() => handleReaction("downvotes")}
             >
               <ThumbsDown className={`h-4 w-4 `} />
               <span>{blog?.downvotes?.length}</span>
