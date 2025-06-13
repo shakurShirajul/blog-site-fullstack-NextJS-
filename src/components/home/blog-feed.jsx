@@ -1,16 +1,18 @@
 "use client";
 import { useBlogsQuery } from "@/redux/api/baseAPI";
+import { Skeleton } from "../ui/skeleton";
 import BlogCard from "./blog-card";
+import BlogFeedSkeleton from "./blog-feed-skeleton";
 
 const PostFeed = () => {
   const { data: blogs, isLoading } = useBlogsQuery();
   console.log(blogs);
   return (
-    <div>
+    <div className="w-full">
       {isLoading ? (
-        <div>Loading....</div>
+        <BlogFeedSkeleton />
       ) : (
-        <div>
+        <div className="space-y-6">
           {blogs?.map((blog) => (
             <BlogCard key={blog._id} blog={blog} />
           ))}
