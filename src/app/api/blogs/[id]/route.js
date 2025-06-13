@@ -1,5 +1,6 @@
 import connectDB from "@/lib/mongodb";
 import { Blog } from "@/models/Blog";
+import { Comment } from "@/models/Comment";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
