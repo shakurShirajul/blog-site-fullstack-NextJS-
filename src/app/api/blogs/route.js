@@ -6,6 +6,7 @@ export async function GET(req) {
   try {
     await connectDB();
     const blogs = await Blog.find({}).populate("authorID");
+    console.log(blogs);
     return NextResponse.json(blogs, { status: 200 });
   } catch (error) {
     console.error("Error in signup route:", error);
