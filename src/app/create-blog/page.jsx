@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreatePostMutation } from "@/redux/api/baseAPI";
+import { useCreateBlogMutation } from "@/redux/api/baseAPI";
 import { ArrowLeft, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -27,7 +27,7 @@ const CreateBlog = () => {
     },
   });
   const { data: session, status } = useSession();
-  const [createPost, { isLoading, error }] = useCreatePostMutation();
+  const [createBlog, { isLoading, error }] = useCreateBlogMutation();
   const onSubmit = async (data) => {
     try {
       const postData = {
@@ -36,7 +36,8 @@ const CreateBlog = () => {
         content: data.content,
         authorID: session?.user.id,
       };
-      const response = await createPost(postData).unwrap();
+      console.log(postData);
+      const response = await createBlog(postData).unwrap();
       if (response) {
         reset();
       }

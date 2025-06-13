@@ -64,18 +64,18 @@ const Navbar = () => {
               /* Logged In - Show Create Post, Notifications, and User Menu */
               <div className="flex items-center space-x-2">
                 <Button className="hidden sm:inline-flex">
-                  <Link href={`create-blog`}>Create Blog</Link>
+                  <Link href="/create-blog">Create Blog</Link>
                 </Button>
 
                 {/* Notification Bell */}
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="h-4 w-4" />
-                  {/* Notification badge */}
-                  <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 text-[10px] font-medium text-white flex items-center justify-center">
+                {/* <Button variant="ghost" size="icon" className="relative">
+                  <Bell className="h-4 w-4" /> */}
+                {/* Notification badge */}
+                {/* <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 text-[10px] font-medium text-white flex items-center justify-center">
                     3
                   </span>
                   <span className="sr-only">Notifications</span>
-                </Button>
+                </Button> */}
 
                 {/* User Avatar Dropdown */}
                 <DropdownMenu>

@@ -54,6 +54,8 @@ const BlogDetails = () => {
     }
   };
 
+  // if (!blog) return <div>Blog not found.</div>;
+
   return (
     <div className="min-h-screenn bg-bcakground">
       <Navbar />
@@ -77,9 +79,7 @@ const BlogDetails = () => {
                   {/* Author Info */}
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage
-                        src={blog.authorID.image || "placeholder.svg"}
-                      />
+                      <AvatarImage src={blog?.authorID?.image} />
                     </Avatar>
                     <div>
                       <h4 className="font-semibold">{blog?.authorID?.name}</h4>

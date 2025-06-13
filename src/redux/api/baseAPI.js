@@ -13,9 +13,9 @@ export const baseAPI = createApi({
         body: userData,
       }),
     }),
-    createPost: builder.mutation({
+    createBlog: builder.mutation({
       query: (postData) => ({
-        url: "/createpost",
+        url: "/create-blog",
         method: "POST",
         body: postData,
       }),
@@ -81,7 +81,7 @@ export const baseAPI = createApi({
 });
 export const {
   useSignupMutation,
-  useCreatePostMutation,
+  useCreateBlogMutation,
   useBlogsQuery,
   useBlogQuery,
   useVotesMutation,
