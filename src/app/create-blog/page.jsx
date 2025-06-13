@@ -1,37 +1,52 @@
 "use client";
+import BlogAssistantGemini from "@/components/ai/blog-assistant-gemini";
 import MarkdownEditor from "@/components/create-blog/markdown-editor";
 import TagInput from "@/components/create-blog/tag-input";
 import Navbar from "@/components/shared/Navbar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateBlogMutation } from "@/redux/api/baseAPI";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 const CreateBlog = () => {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  // if (status === "unauthenticated") {
-  //   router.push("/auth/signin");
-  //   // return null;
-  // }
+  const { data: session } = useSession();
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
+
   const {
     register,
     handleSubmit,
     watch,
     control,
     reset,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
+      title: "",
       tags: [],
+      content: "",
     },
   });
-  const [createBlog, { isLoading, error }] = useCreateBlogMutation();
+
+  // Redux Code
+  const { response } = useSelector((state) => state.gemini);
+  const [createBlog, { isLoading }] = useCreateBlogMutation();
+
   const onSubmit = async (data) => {
     try {
       const postData = {
@@ -40,19 +55,28 @@ const CreateBlog = () => {
         content: data.content,
         authorID: session?.user.id,
       };
-      console.log(postData);
       const response = await createBlog(postData).unwrap();
       if (response) {
-        reset();
+        reset(); // Reset form on success
+        router.push("/"); // or redirect to blog page
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
+
+  // ✅ Fixed: use setValue + getValues from react-hook-form
+  const handleInsertAiContent = (content) => {
+    const currentContent = getValues("content") || "";
+    const newContent =
+      currentContent + (currentContent ? "\n\n" : "") + content;
+    setValue("content", newContent);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="container mx-auto px-4 py8">
+      <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -70,7 +94,7 @@ const CreateBlog = () => {
               </div>
             </div>
           </div>
-          {/*  */}
+
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="grid gap-8 lg:grid-cols-4"
@@ -104,7 +128,6 @@ const CreateBlog = () => {
                     )}
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>A compelling title helps attract readers</span>
-                      {/* <span>{postData.title.length}/100</span> */}
                     </div>
                   </div>
                 </CardContent>
@@ -152,12 +175,26 @@ const CreateBlog = () => {
 
               {/* Body */}
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle>Post Content</CardTitle>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    size="sm"
+                    className="flex items-center gap-1"
+                    onClick={() => setShowAiAssistant(!showAiAssistant)}
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Gemini AI Assistant
+                  </Button>
                 </CardHeader>
+                {/* <CardDescription className="px-6">
+                  Write your post using Markdown. You can use the toolbar or
+                  keyboard shortcuts for formatting.
+                </CardDescription> */}
                 <CardContent>
                   <div className="space-y-2">
-                    <Label htmlFor="body" className="sr-only">
+                    <Label htmlFor="content" className="sr-only">
                       Post Content
                     </Label>
                     <Controller
@@ -175,7 +212,16 @@ const CreateBlog = () => {
                         <MarkdownEditor
                           value={field.value || ""}
                           onChange={field.onChange}
-                          placeholder="Write your post content here... You can use Markdown syntax for formatting."
+                          //placeholder="# Your Post Title
+                          // Write your amazing content here! You can use:
+                          // - **Bold text** and *italic text*
+                          // - [Links](https://example.com)
+                          // - `inline code` and code blocks
+                          // - Lists and quotes
+                          // - Images and much more!
+                          // ## Getting Started
+                          // Start writing and use the preview tab to see how your post will look."
+                          placeholder="Write your post using Markdown. You can use the toolbar or keyboard shortcuts for formatting."
                         />
                       )}
                     />
@@ -186,12 +232,12 @@ const CreateBlog = () => {
                     )}
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>Supports Markdown syntax for rich formatting</span>
-                      {/* <span>{postData.body.length} characters</span> */}
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
+
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <Card className="sticky top-8">
@@ -199,8 +245,9 @@ const CreateBlog = () => {
                   <CardTitle>Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button className="w-full" type="submit">
+                  <Button className="w-full" type="submit" disabled={isLoading}>
                     <Send className="mr-2 h-4 w-4" />
+                    {isLoading ? "Posting..." : "Post"}
                   </Button>
 
                   <div className="text-sm text-muted-foreground space-y-2">
@@ -220,7 +267,16 @@ const CreateBlog = () => {
           </form>
         </div>
       </main>
+
+      {/* AI Assistant */}
+      {showAiAssistant && (
+        <BlogAssistantGemini
+          onInsertContent={handleInsertAiContent}
+          currentContent={watch("content")}
+        />
+      )}
     </div>
   );
 };
+
 export default CreateBlog;

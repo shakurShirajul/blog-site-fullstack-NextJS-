@@ -77,6 +77,16 @@ export const baseAPI = createApi({
         body: commentData,
       }),
     }),
+    generateContent: builder.mutation({
+      query: (prompt) => ({
+        url: "/ai/generate-gemini",
+        method: "POST",
+        body: prompt,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    }),
   }),
 });
 export const {
@@ -86,4 +96,5 @@ export const {
   useBlogQuery,
   useVotesMutation,
   useCreateCommentMutation,
+  useGenerateContentMutation,
 } = baseAPI;
