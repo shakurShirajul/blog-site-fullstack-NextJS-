@@ -14,6 +14,11 @@ import { Controller, useForm } from "react-hook-form";
 
 const CreateBlog = () => {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  // if (status === "unauthenticated") {
+  //   router.push("/auth/signin");
+  //   // return null;
+  // }
   const {
     register,
     handleSubmit,
@@ -26,7 +31,6 @@ const CreateBlog = () => {
       tags: [],
     },
   });
-  const { data: session, status } = useSession();
   const [createBlog, { isLoading, error }] = useCreateBlogMutation();
   const onSubmit = async (data) => {
     try {

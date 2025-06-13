@@ -23,12 +23,12 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              {/* <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">
                   L
                 </span>
-              </div>
-              <span className="hidden font-bold sm:inline-block">Logo</span>
+              </div> */}
+              <span className="hidden font-bold sm:inline-block">BlogNest</span>
             </Link>
 
             {/* Search Box */}
