@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = `mongodb://localhost:27017/nextjs-blog`;
+// const MONGODB_URI = `mongodb://localhost:27017/nextjs-blog`;
+const MONGODB_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@mydatabase.1c7whlf.mongodb.net/?retryWrites=true&w=majority&appName=myDatabase`;
 
 if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
