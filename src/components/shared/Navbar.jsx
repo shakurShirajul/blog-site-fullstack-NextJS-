@@ -104,7 +104,7 @@ const Navbar = () => {
                         </p>
                       </div>
                     </div>
-                    <DropdownMenuSeparator />
+                    {/* <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link href="/profile">Profile</Link>
                     </DropdownMenuItem>
@@ -116,7 +116,7 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard">Dashboard</Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator /> */}
                     <DropdownMenuItem
                       onClick={() => {
                         signOut({ callbackUrl: "/" });
