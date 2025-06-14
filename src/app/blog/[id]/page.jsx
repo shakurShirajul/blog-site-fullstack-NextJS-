@@ -51,6 +51,9 @@ const BlogDetails = () => {
     deleteBlog({ blogID: blog._id, userID: session?.user?.id });
     router.back();
   };
+  const handleBlogEdit = () => {
+    router.push(`/blog/edit/${params.id}`);
+  };
 
   const isUpvoted = blog?.upvotes.includes(session?.user?.id || "");
   const isDownvoted = blog?.downvotes.includes(session?.user?.id || "");
@@ -130,7 +133,11 @@ const BlogDetails = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                handleBlogEdit();
+                              }}
+                            >
                               <Edit className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>

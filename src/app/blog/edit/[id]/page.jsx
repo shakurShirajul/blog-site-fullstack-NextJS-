@@ -4,28 +4,25 @@ import MarkdownEditor from "@/components/create-blog/markdown-editor";
 import TagInput from "@/components/create-blog/tag-input";
 import Navbar from "@/components/shared/Navbar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateBlogMutation } from "@/redux/api/baseAPI";
-import { ArrowLeft, Send, Sparkles } from "lucide-react";
+import { useBlogQuery, useUpdateBlogMutation } from "@/redux/api/baseAPI";
+import { ArrowLeft, Edit3, FileText, Send, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 
-const CreateBlog = () => {
+const EditBlog = () => {
+  const params = useParams();
   const router = useRouter();
-  const { data: session } = useSession();
-  const [showAiAssistant, setShowAiAssistant] = useState(false);
 
+  const { data: blog, isLoading } = useBlogQuery(params.id);
+  const { data: session, status } = useSession();
+  const [updateBlog, { isLoading: isUpdateBlogLoading }] =
+    useUpdateBlogMutation();
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
   const {
     register,
     handleSubmit,
@@ -37,25 +34,32 @@ const CreateBlog = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      title: "",
-      tags: [],
+      title: blog?.title,
+      tags: blog?.tags,
       content: "",
     },
   });
 
-  // Redux Code
-  const { response } = useSelector((state) => state.gemini);
-  const [createBlog, { isLoading }] = useCreateBlogMutation();
+  useEffect(() => {
+    if (blog) {
+      reset({
+        title: blog.title || "",
+        tags: blog.tags || [],
+        content: blog.content || "",
+      });
+    }
+  }, [blog, reset]);
 
   const onSubmit = async (data) => {
     try {
-      const postData = {
+      const updateData = {
         title: data.title,
         tags: data.tags,
         content: data.content,
-        authorID: session?.user.id,
+        authorID: session?.user?.id,
+        blogID: params.id,
       };
-      const response = await createBlog(postData).unwrap();
+      const response = await updateBlog(updateData).unwrap();
       if (response) {
         reset(); // Reset form on success
         router.push("/"); // or redirect to blog page
@@ -84,26 +88,25 @@ const CreateBlog = () => {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div>
-                <h1 className="text-3xl font-bold tracking-tight">
-                  Create a New Blog
+                <h1 className="text-3xl font-bold tracking-tight flex items-center space-x-2">
+                  <Edit3 className="h-8 w-8" />
+                  <span>Edit Post</span>
                 </h1>
-                <p className="text-muted-foreground">
-                  Share your thoughts with the community
-                </p>
               </div>
             </div>
           </div>
-
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="grid gap-8 lg:grid-cols-4"
           >
-            {/* Main Content */}
             <div className="lg:col-span-3 space-y-6">
               {/* Title */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Post Title</CardTitle>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center space-x-2">
+                    <FileText className="h-5 w-5" />
+                    <span>Post Title</span>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
@@ -114,6 +117,7 @@ const CreateBlog = () => {
                       id="title"
                       placeholder="Enter your post title..."
                       type="text"
+                      // defaultValue={blog?.title}
                       {...register("title", {
                         required: "Title is Required",
                       })}
@@ -187,10 +191,6 @@ const CreateBlog = () => {
                     Gemini AI Assistant
                   </Button>
                 </CardHeader>
-                {/* <CardDescription className="px-6">
-                  Write your post using Markdown. You can use the toolbar or
-                  keyboard shortcuts for formatting.
-                </CardDescription> */}
                 <CardContent>
                   <div className="space-y-2">
                     <Label htmlFor="content" className="sr-only">
@@ -211,15 +211,6 @@ const CreateBlog = () => {
                         <MarkdownEditor
                           value={field.value || ""}
                           onChange={field.onChange}
-                          //placeholder="# Your Post Title
-                          // Write your amazing content here! You can use:
-                          // - **Bold text** and *italic text*
-                          // - [Links](https://example.com)
-                          // - `inline code` and code blocks
-                          // - Lists and quotes
-                          // - Images and much more!
-                          // ## Getting Started
-                          // Start writing and use the preview tab to see how your post will look."
                           placeholder="Write your post using Markdown. You can use the toolbar or keyboard shortcuts for formatting."
                         />
                       )}
@@ -235,38 +226,41 @@ const CreateBlog = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-8">
-                <CardHeader>
-                  <CardTitle>Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button className="w-full" type="submit" disabled={isLoading}>
-                    <Send className="mr-2 h-4 w-4" />
-                    {isLoading ? "Posting..." : "Post"}
-                  </Button>
+              {/* Sidebar */}
+              <div className="lg:col-span-1">
+                <Card className="sticky top-8">
+                  <CardHeader>
+                    <CardTitle>Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button
+                      className="w-full"
+                      type="submit"
+                      disabled={isUpdateBlogLoading}
+                    >
+                      <Send className="mr-2 h-4 w-4" />
+                      {isUpdateBlogLoading ? "Posting..." : "Update Post"}
+                    </Button>
 
-                  <div className="text-sm text-muted-foreground space-y-2">
-                    <p>
-                      <strong>Tips:</strong>
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-xs">
-                      <li>Use descriptive titles</li>
-                      <li>Add relevant tags</li>
-                      <li>Format with Markdown</li>
-                      <li>Save drafts frequently</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
+                    <div className="text-sm text-muted-foreground space-y-2">
+                      <p>
+                        <strong>Tips:</strong>
+                      </p>
+                      <ul className="list-disc list-inside space-y-1 text-xs">
+                        <li>Use descriptive titles</li>
+                        <li>Add relevant tags</li>
+                        <li>Format with Markdown</li>
+                        <li>Save drafts frequently</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </form>
         </div>
       </main>
-
       {/* AI Assistant */}
       {showAiAssistant && (
         <BlogAssistantGemini
@@ -277,5 +271,4 @@ const CreateBlog = () => {
     </div>
   );
 };
-
-export default CreateBlog;
+export default EditBlog;

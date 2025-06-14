@@ -3,6 +3,7 @@ import { useBlogsQuery } from "@/redux/api/baseAPI";
 import { Skeleton } from "../ui/skeleton";
 import BlogCard from "./blog-card";
 import BlogSkeleton from "../shared/blog-skeleton";
+import { useEffect } from "react";
 
 const PostFeed = () => {
   const { data: blogs, isLoading } = useBlogsQuery();

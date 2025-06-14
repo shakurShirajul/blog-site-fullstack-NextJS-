@@ -33,6 +33,42 @@ export const baseAPI = createApi({
         body: deleteData,
       }),
     }),
+    updateBlog: builder.mutation({
+      query: (updateData) => ({
+        url: "/blog/update",
+        method: "PATCH",
+        body: updateData,
+      }),
+      async onQueryStarted(updateData, { dispatch, queryFulfilled }) {
+        // Optimistically update the single blog cache
+        const patchBlog = dispatch(
+          baseAPI.util.updateQueryData("blog", updateData.blogID, (draft) => {
+            if (!draft) return;
+            draft.title = updateData.title;
+            draft.tags = updateData.tags;
+            draft.content = updateData.content;
+            draft.updatedAt = new Date().toISOString();
+          })
+        );
+        // Optimistically update the blogs list cache
+        const patchBlogs = dispatch(
+          baseAPI.util.updateQueryData("blogs", undefined, (draft) => {
+            const blog = draft.find((b) => b._id === updateData.blogID);
+            if (!blog) return;
+            blog.title = updateData.title;
+            blog.tags = updateData.tags;
+            blog.content = updateData.content;
+            blog.updatedAt = new Date().toISOString();
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchBlog.undo();
+          patchBlogs.undo();
+        }
+      },
+    }),
     votes: builder.mutation({
       query: (reactionData) => ({
         url: "/votes",
@@ -127,4 +163,5 @@ export const {
   useCreateCommentMutation,
   useGenerateContentMutation,
   useDeleteBlogMutation,
+  useUpdateBlogMutation,
 } = baseAPI;
