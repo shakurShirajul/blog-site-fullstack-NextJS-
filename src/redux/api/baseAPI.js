@@ -15,16 +15,23 @@ export const baseAPI = createApi({
     }),
     createBlog: builder.mutation({
       query: (postData) => ({
-        url: "/create-blog",
+        url: "/blog/create",
         method: "POST",
         body: postData,
       }),
     }),
     blogs: builder.query({
-      query: () => `/blogs`,
+      query: () => `/blog`,
     }),
     blog: builder.query({
-      query: (id) => `/blogs/${id}`,
+      query: (id) => `/blog/${id}`,
+    }),
+    deleteBlog: builder.mutation({
+      query: (deleteData) => ({
+        url: "/blog/delete",
+        method: "DELETE",
+        body: deleteData,
+      }),
     }),
     votes: builder.mutation({
       query: (reactionData) => ({
@@ -38,7 +45,7 @@ export const baseAPI = createApi({
       ) {
         // Optimistically update the blog cache
         const patchResult = dispatch(
-          baseAPI.util.updateQueryData("blogs", undefined, (draft) => {
+          baseAPI.util.updateQueryData("blog", undefined, (draft) => {
             const blog = draft.find((b) => b._id === blogID);
             if (!blog) return;
 
@@ -119,4 +126,5 @@ export const {
   useVotesMutation,
   useCreateCommentMutation,
   useGenerateContentMutation,
+  useDeleteBlogMutation,
 } = baseAPI;
