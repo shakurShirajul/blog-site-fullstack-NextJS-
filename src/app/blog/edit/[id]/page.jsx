@@ -240,7 +240,7 @@ const EditBlog = () => {
                       disabled={isUpdateBlogLoading}
                     >
                       <Send className="mr-2 h-4 w-4" />
-                      {isUpdateBlogLoading ? "Posting..." : "Update Post"}
+                      {isUpdateBlogLoading ? "Updating..." : "Update Post"}
                     </Button>
 
                     <div className="text-sm text-muted-foreground space-y-2">
@@ -251,7 +251,6 @@ const EditBlog = () => {
                         <li>Use descriptive titles</li>
                         <li>Add relevant tags</li>
                         <li>Format with Markdown</li>
-                        <li>Save drafts frequently</li>
                       </ul>
                     </div>
                   </CardContent>

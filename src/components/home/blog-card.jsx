@@ -114,7 +114,7 @@ const BlogCard = ({ blog }) => {
             </Button>
           </div>
 
-          <Button
+          {/* <Button
             variant="ghost"
             size="sm"
             // onClick={(e) => handleActionClick(e, () => onBookmark(post.id))}
@@ -123,7 +123,7 @@ const BlogCard = ({ blog }) => {
             <Bookmark
             //   className={`h-4 w-4 ${post.isBookmarked ? "fill-current" : ""}`}
             />
-          </Button>
+          </Button> */}
         </div>
       </CardContent>
     </Card>

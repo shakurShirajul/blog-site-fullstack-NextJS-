@@ -14,9 +14,10 @@ import { useSignupMutation } from "@/redux/api/baseAPI";
 import { Image, Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Signin = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -30,8 +31,9 @@ const Signin = () => {
     try {
       const response = await signupUser(data).unwrap();
       if (response) {
+        console.log("Hitting");
         reset();
-        redirect("/auth/signin");
+        router.replace("/auth/signin");
       }
     } catch (error) {
       console.error("Error during sign-in:", error);

@@ -213,15 +213,6 @@ const CreateBlog = () => {
                         <MarkdownEditor
                           value={field.value || ""}
                           onChange={field.onChange}
-                          //placeholder="# Your Post Title
-                          // Write your amazing content here! You can use:
-                          // - **Bold text** and *italic text*
-                          // - [Links](https://example.com)
-                          // - `inline code` and code blocks
-                          // - Lists and quotes
-                          // - Images and much more!
-                          // ## Getting Started
-                          // Start writing and use the preview tab to see how your post will look."
                           placeholder="Write your post using Markdown. You can use the toolbar or keyboard shortcuts for formatting."
                         />
                       )}
@@ -259,7 +250,6 @@ const CreateBlog = () => {
                       <li>Use descriptive titles</li>
                       <li>Add relevant tags</li>
                       <li>Format with Markdown</li>
-                      <li>Save drafts frequently</li>
                     </ul>
                   </div>
                 </CardContent>

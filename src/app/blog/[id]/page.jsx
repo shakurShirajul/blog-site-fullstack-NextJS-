@@ -82,7 +82,7 @@ const BlogDetails = () => {
   };
 
   return (
-    <div className="min-h-screenn bg-bcakground">
+    <div className="">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         {isLoading ? (
@@ -99,206 +99,188 @@ const BlogDetails = () => {
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Feed
             </Button>
-            {isLoading ? (
-              <div>Loading...</div>
-            ) : (
-              <div className="space-y-8">
-                {/* Post Content */}
-                <Card>
-                  <CardHeader className="space-y-4">
-                    {/* Author Info */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={blog?.authorID?.image} />
-                        </Avatar>
-                        <div>
-                          <h4 className="font-semibold">
-                            {blog?.authorID?.name}
-                          </h4>
-                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            {/* <span>@{blog.authorID.username}</span> */}
-                            <span>•</span>
-                            <span>{blog?.updatedAt}</span>
-                          </div>
+            <div className="space-y-8">
+              <Card>
+                <CardHeader className="space-y-4">
+                  {/* Author Info */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={blog?.authorID?.image} />
+                      </Avatar>
+                      <div>
+                        <h4 className="font-semibold">
+                          {blog?.authorID?.name}
+                        </h4>
+                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                          {/* <span>@{blog.authorID.username}</span> */}
+                          {/* <span>•</span> */}
+                          <span>
+                            {blog?.updatedAt
+                              ? new Date(blog.updatedAt).toLocaleDateString()
+                              : ""}
+                          </span>
                         </div>
                       </div>
-                      {/* Author actions */}
-                      {blog.authorID._id === session.user.id && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-5 w-5" />
-                              <span className="sr-only">Post options</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => {
-                                handleBlogEdit();
-                              }}
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-red-600"
-                              onClick={() => handleBlogDelete()}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
+                    </div>
+                    {/* Author actions */}
+                    {blog.authorID._id === session.user.id && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-5 w-5" />
+                            <span className="sr-only">Post options</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => {
+                              handleBlogEdit();
+                            }}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => handleBlogDelete()}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <h1 className="text-3xl font-bold leading-tight break-words">
+                    {blog.title}
+                  </h1>
+                  <div
+                    className="w-full leading-relaxed break-words whitespace-pre-line overflow-x-auto"
+                    dangerouslySetInnerHTML={{
+                      __html: marked.parse(blog.content),
+                    }}
+                  />
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {blog?.tags?.map((tag) => (
+                      <Badge key={tag} variant="secondary">
+                        #{tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-6">
+                  {/* Engagement Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <div className="flex items-center space-x-6">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleVote("upvotes")}
+                      >
+                        <ThumbsUp
+                          className={`h-4 w-4 ${
+                            isUpvoted ? "stroke-green-600" : ""
+                          }`}
+                        />
+                        <span>{blog?.upvotes?.length}</span>
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleVote("downvotes")}
+                      >
+                        <ThumbsDown
+                          className={`h-4 w-4 ${
+                            isDownvoted ? "stroke-red-600" : ""
+                          }`}
+                        />
+                        <span>{blog?.downvotes?.length}</span>
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center space-x-2"
+                      >
+                        <MessageCircle className="h-5 w-5" />
+                        <span>{blog?.comments?.length}</span>
+                      </Button>
                     </div>
 
-                    {/* Title */}
-                    <h1 className="text-3xl font-bold leading-tight">
-                      {blog.title}
-                    </h1>
-                    <p
-                      className="text-muted-foreground leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: marked.parse(blog.content),
-                      }}
-                    />
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2">
-                      {blog?.tags?.map((tag) => (
-                        <Badge key={tag} variant="secondary">
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="space-y-6">
-                    {/* Post Content */}
-                    <div className="">{blog?.post}</div>
-
-                    {/* Engagement Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <div className="flex items-center space-x-6">
+                    {/* <div className="flex items-center space-x-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleVote("upvotes")}
-                          //   className={`flex items-center space-x-2 ${
-                          //     post.isLiked ? "text-red-500" : ""
-                          //   }`}
-                        >
-                          <ThumbsUp
-                            className={`h-4 w-4 ${
-                              isUpvoted ? "stroke-green-600" : ""
-                            }`}
-                          />
-                          <span>{blog?.upvotes?.length}</span>
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleVote("downvotes")}
-                          //   className={`flex items-center space-x-2 ${
-                          //     post.isDisliked ? "text-blue-500" : ""
-                          //   }`}
-                        >
-                          <ThumbsDown
-                            className={`h-4 w-4 ${
-                              isDownvoted ? "stroke-red-600" : ""
-                            }`}
-                          />
-                          <span>{blog?.downvotes?.length}</span>
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="flex items-center space-x-2"
-                        >
-                          <MessageCircle className="h-5 w-5" />
-                          <span>{blog?.comments?.length}</span>
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        {/* <Button variant="ghost" size="sm" onClick={handleShare}>
-                  <Share2 className="h-4 w-4" />
-                </Button> */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          //   onClick={handleBookmark}
-                          //   className={post.isBookmarked ? "text-yellow-500" : ""}
                         >
                           <Bookmark
-                          // className={`h-4 w-4 ${
-                          //   post.isBookmarked ? "fill-current" : ""
-                          // }`}
                           />
+                        </Button>
+                      </div> */}
+                  </div>
+                </CardContent>
+              </Card>
+              {/* Comments Section */}
+              <Card>
+                <CardHeader>
+                  <h3 className="text-xl font-semibold">
+                    Comments ({blog.comments.length})
+                  </h3>
+                </CardHeader>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-3">
+                      <Textarea
+                        {...register("comment", {
+                          required:
+                            "Comment is required. Please enter your message.",
+                        })}
+                        placeholder="Write a comment..."
+                        className="min-h-[100px]"
+                      />
+                      <div className="flex justify-end">
+                        <Button type="submit">
+                          <Send className="mr-2 h-4 w-4" /> Post Comment
                         </Button>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-                {/* Comments Section */}
-                <Card>
-                  <CardHeader>
-                    <h3 className="text-xl font-semibold">
-                      Comments ({blog.comments.length})
-                    </h3>
-                  </CardHeader>
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-3">
-                        <Textarea
-                          {...register("comment", {
-                            required:
-                              "Comment is required. Please enter your message.",
-                          })}
-                          placeholder="Write a comment..."
-                          className="min-h-[100px]"
-                        />
-                        <div className="flex justify-end">
-                          <Button type="submit">
-                            <Send className="mr-2 h-4 w-4" /> Post Comment
-                          </Button>
-                        </div>
-                      </div>
-                      <Separator />
-                      {/* Comment List */}
-                      <div className="space-y-6">
-                        {blog.comments.map((comment) => (
-                          <div key={comment._id} className="space-y-3">
-                            <div className="flex items-start space-x-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarImage
-                                  src={
-                                    comment.authorID.image || "/placeholder.svg"
-                                  }
-                                ></AvatarImage>
-                              </Avatar>
-                              <div className="flex-1 space-y-2">
-                                <div className="flex items-center space-x-2">
-                                  <span className="font-medium">
-                                    {comment.authorID.name}
-                                  </span>
-                                </div>
-                                <p className="text-mutated-foreground leading-relaxed">
-                                  {comment.content}
-                                </p>
+                    <Separator />
+                    {/* Comment List */}
+                    <div className="space-y-6">
+                      {blog.comments.map((comment) => (
+                        <div key={comment._id} className="space-y-3">
+                          <div className="flex items-start space-x-3">
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage
+                                src={
+                                  comment.authorID.image || "/placeholder.svg"
+                                }
+                              ></AvatarImage>
+                            </Avatar>
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <span className="font-medium">
+                                  {comment.authorID.name}
+                                </span>
                               </div>
+                              <p className="text-mutated-foreground leading-relaxed">
+                                {comment.content}
+                              </p>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                      <div></div>
-                    </CardContent>
-                  </form>
-                </Card>
-              </div>
-            )}
+                        </div>
+                      ))}
+                    </div>
+                    <div></div>
+                  </CardContent>
+                </form>
+              </Card>
+            </div>
           </div>
         )}
       </main>

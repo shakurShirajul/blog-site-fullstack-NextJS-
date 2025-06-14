@@ -26,11 +26,32 @@ export default function MarkdownEditor({ value, onChange, placeholder }) {
       case "italic":
         newText = `*${replacement}*`;
         break;
+      case "strikethrough":
+        newText = `~~${replacement}~~`;
+        break;
+      case "h1":
+        newText = `# ${replacement}`;
+        break;
+      case "h2":
+        newText = `## ${replacement}`;
+        break;
+      case "h3":
+        newText = `### ${replacement}`;
+        break;
       case "link":
         newText = `[${replacement || "link text"}](url)`;
         break;
+      case "image":
+        newText = `![${replacement || "alt text"}](url)`;
+        break;
       case "list":
         newText = `\n- ${replacement || "list item"}`;
+        break;
+      case "ordered-list":
+        newText = `\n1. ${replacement || "list item"}`;
+        break;
+      case "hr":
+        newText = `\n---\n`;
         break;
       case "quote":
         newText = `\n> ${replacement || "quote"}`;
@@ -38,6 +59,11 @@ export default function MarkdownEditor({ value, onChange, placeholder }) {
       case "code":
         newText = `\`${replacement || "code"}\``;
         break;
+      case "codeblock":
+        newText = `\n\`\`\`\n${replacement || "code block"}\n\`\`\`\n`;
+        break;
+      default:
+        newText = replacement;
     }
 
     const newValue = value.substring(0, start) + newText + value.substring(end);
@@ -52,18 +78,72 @@ export default function MarkdownEditor({ value, onChange, placeholder }) {
   };
 
   const renderMarkdownPreview = (text) => {
-    // Simple markdown rendering for preview
-    return text
+    // Handle code blocks first to avoid interfering with other replacements
+    text = text.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
+
+    // Headings
+    text = text
+      .replace(/^### (.*)$/gim, "<h3>$1</h3>")
+      .replace(/^## (.*)$/gim, "<h2>$1</h2>")
+      .replace(/^# (.*)$/gim, "<h1>$1</h1>");
+
+    // Bold, Italic, Strikethrough
+    text = text
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/`(.*?)`/g, "<code>$1</code>")
-      .replace(/^> (.*$)/gm, "<blockquote>$1</blockquote>")
-      .replace(/^- (.*$)/gm, "<li>$1</li>")
-      .replace(
-        /\[([^\]]+)\]$$([^)]+)$$/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-      )
-      .replace(/\n/g, "<br>");
+      .replace(/~~(.*?)~~/g, "<del>$1</del>");
+
+    // Inline code
+    text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+    // Blockquote
+    text = text.replace(/^> (.*)$/gim, "<blockquote>$1</blockquote>");
+
+    // Images
+    text = text.replace(
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      '<img alt="$1" src="$2" />'
+    );
+
+    // Links
+    text = text.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+
+    // Ordered lists (group consecutive items)
+    text = text.replace(
+      /((?:^\d+\.\s+.*$\n?)+)/gim,
+      (match) =>
+        "<ol>" +
+        match
+          .trim()
+          .split(/\n/)
+          .map((item) => item.replace(/^\d+\.\s+/, "<li>") + "</li>")
+          .join("") +
+        "</ol>"
+    );
+
+    // Unordered lists (group consecutive items)
+    text = text.replace(
+      /((?:^- .*$\n?)+)/gim,
+      (match) =>
+        "<ul>" +
+        match
+          .trim()
+          .split(/\n/)
+          .map((item) => item.replace(/^- /, "<li>") + "</li>")
+          .join("") +
+        "</ul>"
+    );
+
+    // Horizontal rule
+    text = text.replace(/^\s*---\s*$/gim, "<hr />");
+
+    // Line breaks
+    text = text.replace(/\n{2,}/g, "<br><br>").replace(/\n/g, "<br>");
+
+    return text;
   };
 
   return (
@@ -131,6 +211,76 @@ export default function MarkdownEditor({ value, onChange, placeholder }) {
               >
                 <Code className="h-4 w-4" />
               </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("h1", "Heading 1")}
+                title="Heading 1"
+              >
+                H1
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("h2", "Heading 2")}
+                title="Heading 2"
+              >
+                H2
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("h3", "Heading 3")}
+                title="Heading 3"
+              >
+                H3
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("strikethrough", "strikethrough")}
+                title="Strikethrough"
+              >
+                <s>S</s>
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("ordered-list", "list item")}
+                title="Ordered List"
+              >
+                OL
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("image", "alt text")}
+                title="Image"
+              >
+                🖼️
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("hr")}
+                title="Horizontal Rule"
+              >
+                ―
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => insertMarkdown("codeblock", "code block")}
+                title="Code Block"
+              >{`</>`}</Button>
             </div>
           )}
         </div>
