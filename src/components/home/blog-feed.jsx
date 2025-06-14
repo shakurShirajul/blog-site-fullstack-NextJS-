@@ -2,14 +2,14 @@
 import { useBlogsQuery } from "@/redux/api/baseAPI";
 import { Skeleton } from "../ui/skeleton";
 import BlogCard from "./blog-card";
-import BlogFeedSkeleton from "./blog-feed-skeleton";
+import BlogSkeleton from "../shared/blog-skeleton";
 
 const PostFeed = () => {
   const { data: blogs, isLoading } = useBlogsQuery();
   return (
     <div className="w-full">
       {isLoading ? (
-        <BlogFeedSkeleton />
+        <BlogSkeleton />
       ) : (
         <div className="space-y-6">
           {blogs?.map((blog) => (

@@ -1,12 +1,9 @@
 import { Skeleton } from "../ui/skeleton";
 
-const BlogFeedSkeleton = () => (
+const BlogSkeleton = () => (
   <div className="min-h-screen w-full flex flex-col gap-8 py-8">
     {[...Array(4)].map((_, idx) => (
-      <div
-        key={idx}
-        className="w-full max-w-3xl mx-auto cursor-pointer transition-shadow bg-card rounded-xl p-6"
-      >
+      <div key={idx} className="w-full">
         <div className="pb-3">
           <div className="flex items-start space-x-3">
             <Skeleton className="h-12 w-12 rounded-full" />
@@ -32,4 +29,4 @@ const BlogFeedSkeleton = () => (
   </div>
 );
 
-export default BlogFeedSkeleton;
+export default BlogSkeleton;
