@@ -32,6 +32,26 @@ export const baseAPI = createApi({
         method: "DELETE",
         body: deleteData,
       }),
+      async onQueryStarted(deleteData, { dispatch, queryFulfilled }) {
+        // Optimistically remove the blog from the blogs list
+        const patchBlogs = dispatch(
+          baseAPI.util.updateQueryData("blogs", undefined, (draft) => {
+            return draft.filter((blog) => blog._id !== deleteData.blogID);
+          })
+        );
+        // Optionally, remove the single blog cache
+        const patchBlog = dispatch(
+          baseAPI.util.updateQueryData("blog", deleteData.blogID, (draft) => {
+            return undefined;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchBlogs.undo();
+          patchBlog.undo();
+        }
+      },
     }),
     updateBlog: builder.mutation({
       query: (updateData) => ({

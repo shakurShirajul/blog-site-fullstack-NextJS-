@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateBlogMutation } from "@/redux/api/baseAPI";
+import { useBlogQuery, useCreateBlogMutation } from "@/redux/api/baseAPI";
 import { ArrowLeft, Send, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -46,6 +46,7 @@ const CreateBlog = () => {
   // Redux Code
   const { response } = useSelector((state) => state.gemini);
   const [createBlog, { isLoading }] = useCreateBlogMutation();
+  const { refetch } = useBlogQuery();
 
   const onSubmit = async (data) => {
     try {
@@ -58,6 +59,7 @@ const CreateBlog = () => {
       const response = await createBlog(postData).unwrap();
       if (response) {
         reset(); // Reset form on success
+        refetch();
         router.push("/"); // or redirect to blog page
       }
     } catch (error) {
