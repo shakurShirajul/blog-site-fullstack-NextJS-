@@ -20,7 +20,6 @@ const BlogCard = ({ blog }) => {
     ) {
       return;
     }
-
     if (blog?._id) {
       router.push(`/blog/${blog._id}`);
     } else {
@@ -30,7 +29,6 @@ const BlogCard = ({ blog }) => {
   const [manageReaction, { isLoading, error }] = useVotesMutation();
 
   const handleReaction = (voteTypes) => {
-    console.log(voteTypes);
     manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
   };
 

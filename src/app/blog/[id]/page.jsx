@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { useBlogQuery, useCreateCommentMutation } from "@/redux/api/baseAPI";
+import {
+  useBlogQuery,
+  useCreateCommentMutation,
+  useVotesMutation,
+} from "@/redux/api/baseAPI";
 import {
   ArrowLeft,
   Bookmark,
@@ -25,7 +29,19 @@ const BlogDetails = () => {
   const params = useParams();
   const router = useRouter();
   const { data: blog, isLoading } = useBlogQuery(params.id);
-  console.log(blog);
+  const { data: session, status } = useSession();
+  const [createComment, { error }] = useCreateCommentMutation();
+  const [manageReaction, {}] = useVotesMutation();
+
+  const handleReaction = (voteTypes) => {
+    console.log(session?.user?.id, blog._id, voteTypes);
+    manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
+  };
+
+  console.log(blog?.upvotes, blog?.downvotes);
+
+  const isUpvoted = blog?.upvotes.includes(session?.user?.id || "");
+  const isDownvoted = blog?.downvotes.includes(session?.user?.id || "");
 
   const {
     register,
@@ -35,8 +51,6 @@ const BlogDetails = () => {
     reset,
     formState: { errors },
   } = useForm();
-  const { data: session, status } = useSession();
-  const [createComment, { error }] = useCreateCommentMutation();
 
   const onSubmit = async (data) => {
     try {
@@ -53,8 +67,6 @@ const BlogDetails = () => {
       console.log(error);
     }
   };
-
-  // if (!blog) return <div>Blog not found.</div>;
 
   return (
     <div className="min-h-screenn bg-bcakground">
@@ -120,13 +132,16 @@ const BlogDetails = () => {
                       <Button
                         variant="ghost"
                         size="sm"
+                        onClick={() => handleReaction("upvotes")}
                         //   onClick={handleLike}
                         //   className={`flex items-center space-x-2 ${
                         //     post.isLiked ? "text-red-500" : ""
                         //   }`}
                       >
                         <ThumbsUp
-                        // className={`h-5 w-5 ${post.isLiked ? "fill-current" : ""}`}
+                          className={`h-4 w-4 ${
+                            isUpvoted ? "stroke-green-600" : ""
+                          }`}
                         />
                         <span>{blog?.upvotes?.length}</span>
                       </Button>
@@ -134,15 +149,16 @@ const BlogDetails = () => {
                       <Button
                         variant="ghost"
                         size="sm"
+                        onClick={() => handleReaction("downvotes")}
                         //   onClick={handleDislike}
                         //   className={`flex items-center space-x-2 ${
                         //     post.isDisliked ? "text-blue-500" : ""
                         //   }`}
                       >
                         <ThumbsDown
-                        // className={`h-5 w-5 ${
-                        //   post.isDisliked ? "fill-current" : ""
-                        // }`}
+                          className={`h-4 w-4 ${
+                            isDownvoted ? "stroke-red-600" : ""
+                          }`}
                         />
                         <span>{blog?.downvotes?.length}</span>
                       </Button>

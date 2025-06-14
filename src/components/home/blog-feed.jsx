@@ -6,7 +6,6 @@ import BlogFeedSkeleton from "./blog-feed-skeleton";
 
 const PostFeed = () => {
   const { data: blogs, isLoading } = useBlogsQuery();
-  console.log(blogs);
   return (
     <div className="w-full">
       {isLoading ? (

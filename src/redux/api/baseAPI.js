@@ -62,11 +62,33 @@ export const baseAPI = createApi({
             }
           })
         );
-
+        const patchBlog = dispatch(
+          baseAPI.util.updateQueryData("blog", blogID, (draft) => {
+            if (!draft) return;
+            const alreadyUpvoted = draft.upvotes.includes(userID);
+            const alreadyDownvoted = draft.downvotes.includes(userID);
+            if (voteTypes === "upvotes") {
+              if (alreadyUpvoted) {
+                draft.upvotes = draft.upvotes.filter((id) => id !== userID);
+              } else {
+                draft.upvotes.push(userID);
+                draft.downvotes = draft.downvotes.filter((id) => id !== userID);
+              }
+            } else if (voteTypes === "downvotes") {
+              if (alreadyDownvoted) {
+                draft.downvotes = draft.downvotes.filter((id) => id !== userID);
+              } else {
+                draft.downvotes.push(userID);
+                draft.upvotes = draft.upvotes.filter((id) => id !== userID);
+              }
+            }
+          })
+        );
         try {
           await queryFulfilled;
         } catch {
           patchResult.undo();
+          patchBlog.undo();
         }
       },
     }),
