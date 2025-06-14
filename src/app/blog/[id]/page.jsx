@@ -33,12 +33,9 @@ const BlogDetails = () => {
   const [createComment, { error }] = useCreateCommentMutation();
   const [manageReaction, {}] = useVotesMutation();
 
-  const handleReaction = (voteTypes) => {
-    console.log(session?.user?.id, blog._id, voteTypes);
+  const handleVote = (voteTypes) => {
     manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
   };
-
-  console.log(blog?.upvotes, blog?.downvotes);
 
   const isUpvoted = blog?.upvotes.includes(session?.user?.id || "");
   const isDownvoted = blog?.downvotes.includes(session?.user?.id || "");
@@ -132,8 +129,7 @@ const BlogDetails = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleReaction("upvotes")}
-                        //   onClick={handleLike}
+                        onClick={() => handleVote("upvotes")}
                         //   className={`flex items-center space-x-2 ${
                         //     post.isLiked ? "text-red-500" : ""
                         //   }`}
@@ -149,8 +145,7 @@ const BlogDetails = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleReaction("downvotes")}
-                        //   onClick={handleDislike}
+                        onClick={() => handleVote("downvotes")}
                         //   className={`flex items-center space-x-2 ${
                         //     post.isDisliked ? "text-blue-500" : ""
                         //   }`}

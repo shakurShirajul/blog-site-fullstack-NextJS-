@@ -64,7 +64,7 @@ const Navbar = () => {
               /* Logged In - Show Create Post, Notifications, and User Menu */
               <div className="flex items-center space-x-2">
                 <Button className="hidden sm:inline-flex">
-                  <Link href="/create-blog">Create Blog</Link>
+                  <Link href="/blog/create">Create Blog</Link>
                 </Button>
 
                 {/* Notification Bell */}

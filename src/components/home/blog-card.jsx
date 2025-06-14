@@ -28,7 +28,7 @@ const BlogCard = ({ blog }) => {
   };
   const [manageReaction, { isLoading, error }] = useVotesMutation();
 
-  const handleReaction = (voteTypes) => {
+  const handleVote = (voteTypes) => {
     manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
   };
 
@@ -83,7 +83,7 @@ const BlogCard = ({ blog }) => {
               variant="ghost"
               size="sm"
               className={`flex items-center space-x-2`}
-              onClick={() => handleReaction("upvotes")}
+              onClick={() => handleVote("upvotes")}
             >
               <ThumbsUp
                 className={`h-4 w-4 ${isUpvoted ? "stroke-green-600" : ""}`}
@@ -95,7 +95,7 @@ const BlogCard = ({ blog }) => {
               variant="ghost"
               size="sm"
               className={`flex items-center space-x-2 `}
-              onClick={() => handleReaction("downvotes")}
+              onClick={() => handleVote("downvotes")}
             >
               <ThumbsDown
                 className={`h-4 w-4 ${isDownvoted ? "stroke-red-600" : ""}`}

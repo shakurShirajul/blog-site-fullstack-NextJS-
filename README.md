@@ -4,4 +4,4 @@ To Do For This Project
 - Update Post
 - Delete Post
 - Add Toast
-- Add Loading Skeleton
+- Add Loading Skeleton - Added in Home Page
