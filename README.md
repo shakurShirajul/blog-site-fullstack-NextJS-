@@ -8,20 +8,18 @@ A modern, full-featured blogging platform built using **Next.js**, **MongoDB**, 
 
 ## 📑 Table of Contents
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Configuration](#configuration)
-- [Dependencies](#dependencies)
-- [Examples](#examples)
-- [Troubleshooting](#troubleshooting)
-- [Contributors](#contributors)
+- [🧰 Introduction](#introduction)
+- [🚀 Features](#features)
+- [⚙️ Installation](#installation)
+- [📁 Project Structure](#project-structure)
+- [⚙️ Configuration](#configuration)
+- [📦 Dependencies](#dependencies)
+- [🛠️ Troubleshooting](#troubleshooting)
+- [👥 Contributors](#contributors)
 
 ---
 
-## 🧰 Introduction
+## Introduction
 
 This project is a fullstack blog application that allows users to register, authenticate, create and edit blog posts, and explore other users' content. It leverages a modern tech stack including:
 
@@ -33,7 +31,7 @@ This project is a fullstack blog application that allows users to register, auth
 
 ---
 
-## 🚀 Features
+## Features
 
 - Full user authentication with NextAuth.js
 - Responsive and accessible UI using Tailwind CSS and Radix UI
@@ -45,7 +43,7 @@ This project is a fullstack blog application that allows users to register, auth
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 1. **Clone the Repository**
 
@@ -78,7 +76,9 @@ npm run dev
 
 App will be running on http://localhost:3000
 
-## 📁 Project Structure
+---
+
+## Project Structure
 
 ```bash
 /pages          → Next.js pages (routes)
@@ -89,7 +89,9 @@ App will be running on http://localhost:3000
 /public         → Static assets
 ```
 
-## ⚙️ Configuration
+---
+
+## Configuration
 
 - Tailwind CSS is configured for design utility
 - ESLint and Prettier are used for code quality
@@ -97,7 +99,9 @@ App will be running on http://localhost:3000
 - NextAuth.js is configured for authentication
   Update `.env.local` for any service keys or environment-specific variables.
 
-## 📦 Dependencies
+---
+
+## Dependencies
 
 Runtime
 
@@ -114,27 +118,18 @@ Development
 - tailwindcss 4.x
 - @types/node, @types/react
 
-## 🧪 Examples
+---
 
-```bash
-# My First Post
-
-This is a **bold** word and here’s a [link](https://example.com).
-
-- List item 1
-- List item 2
-```
-
-This gets rendered with proper formatting using the `marked` library.
-
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 - App crashes on start: Ensure MongoDB is running and `.env.local` is correctly configured.
 - Auth issues: Check that `NEXTAUTH_SECRET` and`NEXTAUTH_URL`are set.
 - Styling not applied: Confirm Tailwind is correctly configured and PostCSS is functioning.
 
-## 👥 Contributors
+---
 
-- Shakur Shirajul
+## Contributors
+
+- > [Shirajul Islam Shakur](https:github.com/shakurShirajul)
 
 Contributions are welcome! Feel free to fork the repository and submit a pull request.
