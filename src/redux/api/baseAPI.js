@@ -101,7 +101,7 @@ export const baseAPI = createApi({
       ) {
         // Optimistically update the blog cache
         const patchResult = dispatch(
-          baseAPI.util.updateQueryData("blog", undefined, (draft) => {
+          baseAPI.util.updateQueryData("blogs", undefined, (draft) => {
             const blog = draft.find((b) => b._id === blogID);
             if (!blog) return;
 

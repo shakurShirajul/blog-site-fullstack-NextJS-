@@ -29,6 +29,7 @@ const BlogCard = ({ blog }) => {
   const [manageReaction, { isLoading, error }] = useVotesMutation();
 
   const handleVote = (voteTypes) => {
+    console.log("here");
     manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
   };
 
