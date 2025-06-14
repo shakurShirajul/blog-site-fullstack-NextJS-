@@ -1,10 +1,11 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Bookmark, MessageCircle, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useVotesMutation } from "@/redux/api/baseAPI";
+import { useVotesMutation } from "../../redux/api/baseAPI";
 import { useSession } from "next-auth/react";
 import { marked } from "marked";
 

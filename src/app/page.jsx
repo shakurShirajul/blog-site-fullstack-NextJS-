@@ -1,5 +1,6 @@
-import BlogFeed from "@/components/home/blog-feed";
-import Navbar from "@/components/shared/Navbar";
+"use client";
+import BlogFeed from "../components/home/BlogFeed";
+import Navbar from "../components/shared/Navbar";
 
 const Home = () => {
   return (

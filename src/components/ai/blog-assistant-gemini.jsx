@@ -3,8 +3,8 @@
 import React from "react";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "../../components/ui/button";
+import { Textarea } from "../../components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -12,16 +12,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "../../components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Sparkles, Loader2, Send, Lightbulb, Wand2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useGenerateContentMutation } from "@/redux/api/baseAPI";
+import { useGenerateContentMutation } from "../../redux/api/baseAPI";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setGeminiError,
   setGeneratedContent,
-} from "@/redux/features/geminiSlice";
+} from "../../redux/features/geminiSlice";
 // import { useToast } from "@/hooks/use-toast";
 
 const BlogAssistantGemini = ({ onInsertContent, currentContent = "" }) => {

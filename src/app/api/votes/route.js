@@ -1,5 +1,5 @@
-import connectDB from "@/lib/mongodb";
-import { Blog } from "@/models/Blog";
+import connectDB from "../../../lib/mongodb";
+import { Blog } from "../../../models/Blog";
 import mongoose, { Types } from "mongoose";
 import { NextResponse } from "next/server";
 

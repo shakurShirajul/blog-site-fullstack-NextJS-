@@ -1,11 +1,9 @@
 "use client";
-import { useBlogsQuery } from "@/redux/api/baseAPI";
-import { Skeleton } from "../ui/skeleton";
-import BlogCard from "./blog-card";
+import { useBlogsQuery } from "../../redux/api/baseAPI";
+import BlogCard from "./BlogCard";
 import BlogSkeleton from "../shared/blog-skeleton";
-import { useEffect } from "react";
 
-const PostFeed = () => {
+const BlogFeed = () => {
   const { data: blogs, isLoading } = useBlogsQuery();
   return (
     <div className="w-full">
@@ -21,4 +19,4 @@ const PostFeed = () => {
     </div>
   );
 };
-export default PostFeed;
+export default BlogFeed;

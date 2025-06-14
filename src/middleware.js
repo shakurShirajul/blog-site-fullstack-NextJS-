@@ -2,12 +2,13 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 export async function middleware(req) {
-  console.log("Middleware running for:", req.nextUrl.pathname);
+  const pathname = req.nextUrl.pathname;
 
-  const token = await getToken({ req });
-  const isProtected = req.nextUrl.pathname.startsWith("/create-blog"); // add more routes as needed
+  // Match /blog/create or /blog/<24-hex-id>
+  const isCreate = pathname === "/blog/create";
+  const isBlogId = /^\/blog\/[a-f0-9]{24}$/.test(pathname);
 
-  if (isProtected && !token) {
+  if ((isCreate || isBlogId) && !(await getToken({ req }))) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
@@ -15,5 +16,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/create-blog/:path*"], // add more patterns as needed
+  matcher: ["/blog/create", "/blog/:id([a-f0-9]{24})"],
 };

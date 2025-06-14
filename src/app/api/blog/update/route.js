@@ -1,6 +1,6 @@
-import connectDB from "@/lib/mongodb";
-import { Blog } from "@/models/Blog";
-import { Comment } from "@/models/Comment";
+import connectDB from "../../../../lib/mongodb";
+import { Blog } from "../../../../models/Blog";
+import { Comment } from "../../../../models/Comment";
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 

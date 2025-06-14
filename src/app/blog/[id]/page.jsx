@@ -1,24 +1,24 @@
 "use client";
-import BlogSkeleton from "@/components/shared/blog-skeleton";
-import Navbar from "@/components/shared/Navbar";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import BlogSkeleton from "../../../components/shared/blog-skeleton";
+import Navbar from "../../../components/shared/Navbar";
+import { Avatar, AvatarImage } from "../../../components/ui/avatar";
+import { Badge } from "../../../components/ui/badge";
+import { Button } from "../../../components/ui/button";
+import { Card, CardContent, CardHeader } from "../../../components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
+} from "../../../components/ui/dropdown-menu";
+import { Separator } from "../../../components/ui/separator";
+import { Textarea } from "../../../components/ui/textarea";
 import {
   useBlogQuery,
   useCreateCommentMutation,
   useDeleteBlogMutation,
   useVotesMutation,
-} from "@/redux/api/baseAPI";
+} from "../../../redux/api/baseAPI";
 import {
   ArrowLeft,
   Bookmark,
@@ -43,6 +43,8 @@ const BlogDetails = () => {
   const [createComment, { error }] = useCreateCommentMutation();
   const [manageReaction, {}] = useVotesMutation();
   const [deleteBlog, { error: blogDeleteError }] = useDeleteBlogMutation();
+
+  console.log(blog);
 
   const handleVote = (voteTypes) => {
     manageReaction({ userID: session?.user?.id, blogID: blog._id, voteTypes });
@@ -124,7 +126,7 @@ const BlogDetails = () => {
                       </div>
                     </div>
                     {/* Author actions */}
-                    {blog.authorID._id === session.user.id && (
+                    {blog?.authorID?._id === session?.user?.id && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon">
@@ -155,12 +157,12 @@ const BlogDetails = () => {
 
                   {/* Title */}
                   <h1 className="text-3xl font-bold leading-tight break-words">
-                    {blog.title}
+                    {blog?.title}
                   </h1>
                   <div
                     className="w-full leading-relaxed break-words whitespace-pre-line overflow-x-auto"
                     dangerouslySetInnerHTML={{
-                      __html: marked.parse(blog.content),
+                      __html: marked.parse(blog?.content || ""),
                     }}
                   />
                   {/* Tags */}
@@ -229,7 +231,7 @@ const BlogDetails = () => {
               <Card>
                 <CardHeader>
                   <h3 className="text-xl font-semibold">
-                    Comments ({blog.comments.length})
+                    Comments ({blog?.comments?.length})
                   </h3>
                 </CardHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -252,7 +254,7 @@ const BlogDetails = () => {
                     <Separator />
                     {/* Comment List */}
                     <div className="space-y-6">
-                      {blog.comments.map((comment) => (
+                      {blog?.comments?.map((comment) => (
                         <div key={comment._id} className="space-y-3">
                           <div className="flex items-start space-x-3">
                             <Avatar className="h-10 w-10">

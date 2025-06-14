@@ -1,6 +1,6 @@
-import connectDB from "@/lib/mongodb";
-import { Blog } from "@/models/Blog";
-import { Comment } from "@/models/Comment";
+import connectDB from "../../../../lib/mongodb";
+import { Comment } from "../../../../models/Comment";
+import { Blog } from "../../../../models/Blog";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -8,6 +8,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const id = url.pathname.split("/").pop();
     await connectDB();
+    console.log(id);
     const blogs = await Blog.findOne({ _id: id })
       .populate("authorID")
       .populate({

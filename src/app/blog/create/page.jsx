@@ -1,19 +1,22 @@
 "use client";
-import BlogAssistantGemini from "@/components/ai/blog-assistant-gemini";
-import MarkdownEditor from "@/components/create-blog/markdown-editor";
-import TagInput from "@/components/create-blog/tag-input";
-import Navbar from "@/components/shared/Navbar";
-import { Button } from "@/components/ui/button";
+import BlogAssistantGemini from "../../../components/ai/blog-assistant-gemini";
+import MarkdownEditor from "../../../components/create-blog/markdown-editor";
+import TagInput from "../../../components/create-blog/tag-input";
+import Navbar from "../../../components/shared/Navbar";
+import { Button } from "../../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useBlogQuery, useCreateBlogMutation } from "@/redux/api/baseAPI";
+} from "../../../components/ui/card";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import {
+  useBlogQuery,
+  useCreateBlogMutation,
+} from "../../../redux/api/baseAPI";
 import { ArrowLeft, Send, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

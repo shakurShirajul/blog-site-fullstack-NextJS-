@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { Textarea } from "../../components/ui/textarea";
+import { Button } from "../../components/ui/button";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
 import { Bold, Italic, Link, List, Quote, Code } from "lucide-react";
 
 export default function MarkdownEditor({ value, onChange, placeholder }) {
