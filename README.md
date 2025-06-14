@@ -4,7 +4,7 @@ A modern, full-featured blogging platform built using **Next.js**, **MongoDB**, 
 
 ## 🌐 Live Demo
 
-> [_Blogify_](https://blog-site-fullstack-next-js.vercel.app)
+> [_BlogNest_](https://blog-site-fullstack-next-js.vercel.app)
 
 ## 📑 Table of Contents
 
@@ -130,6 +130,6 @@ Development
 
 ## Contributors
 
-- > [Shirajul Islam Shakur](https:github.com/shakurShirajul)
+- > [Shirajul Islam Shakur](/shakurShirajul)
 
 Contributions are welcome! Feel free to fork the repository and submit a pull request.
