@@ -1,7 +1,3 @@
-Here’s a professional and detailed `README.md` file for your fullstack blog site built with Next.js:
-
----
-
 ````markdown
 # Blog Site – Fullstack with Next.js
 
@@ -175,4 +171,8 @@ Contributions are welcome! Feel free to fork the repository and submit a pull re
 ---
 
 Let me know if you'd like help filling in missing sections like a live demo URL or license, or if you'd like to auto-generate the `.env.local` template or file scaffolding.
+```
+
+```
+
 ```
